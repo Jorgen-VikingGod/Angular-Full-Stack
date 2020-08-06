@@ -5,11 +5,6 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
-  "files": [
-    "client/main.ts",
-    "client/polyfills.ts"
-  ],
-  "include": [
-    "client/**/*.d.ts"
-  ]
+  "files": ["client/main.ts", "client/polyfills.ts"],
+  "include": ["client/**/*.d.ts"]
 }

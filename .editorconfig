@@ -1,7 +1,8 @@
-# Editor configuration, see http://editorconfig.org
+# Editor configuration, see https://editorconfig.org
 root = true
 
 [*]
+quote_type = single
 charset = utf-8
 indent_style = space
 indent_size = 2
