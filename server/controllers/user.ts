@@ -12,7 +12,9 @@ class UserCtrl extends BaseCtrl {
   login = (req, res) => {
     const { username, password } = req.body;
     const user = this.model.find((x) => x.username === username && x.password === password);
-    if (!user) return res.status(403).json({ err: 'Username or password is incorrect' });
+    if (!user) {
+      return res.status(403).json({ err: 'Username or password is incorrect' });
+    }
     const token = jwt.sign({ user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
     return res.status(200).json({
       ...this.omitPassword(user),
