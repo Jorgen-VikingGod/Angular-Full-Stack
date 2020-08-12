@@ -2,58 +2,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { JwtModule } from '@auth0/angular-jwt';
 // Modules
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
-// Services
-import { CatService } from './services/cat.service';
-import { UserService } from './services/user.service';
-import { AuthService } from './services/auth.service';
-import { AuthGuardLogin } from './services/auth-guard-login.service';
-import { AuthGuardAdmin } from './services/auth-guard-admin.service';
+import { CoreModule } from './core/core.module';
+import { CustomMaterialModule } from './custom-material/custom-material.module';
+import { LoggerModule } from 'ngx-logger';
 // Components
 import { AppComponent } from './app.component';
-import { CatsComponent } from './cats/cats.component';
-import { AddCatFormComponent } from './add-cat-form/add-cat-form.component';
-import { AboutComponent } from './about/about.component';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
-import { LogoutComponent } from './logout/logout.component';
-import { AccountComponent } from './account/account.component';
-import { AdminComponent } from './admin/admin.component';
-import { NotFoundComponent } from './not-found/not-found.component';
+// Environments
+import { environment } from '../environments/environment';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    CatsComponent,
-    AddCatFormComponent,
-    AboutComponent,
-    RegisterComponent,
-    LoginComponent,
-    LogoutComponent,
-    AccountComponent,
-    AdminComponent,
-    NotFoundComponent
-  ],
+  declarations: [AppComponent],
   imports: [
-    AppRoutingModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    CoreModule,
     SharedModule,
+    CustomMaterialModule.forRoot(),
+    AppRoutingModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: (): string => localStorage.getItem('token'),
         // whitelistedDomains: ['localhost:3000', 'localhost:4200']
-      }
-    })
-  ],
-  providers: [
-    AuthService,
-    AuthGuardLogin,
-    AuthGuardAdmin,
-    CatService,
-    UserService
+      },
+    }),
+    LoggerModule.forRoot({
+      serverLoggingUrl: `http://my-api/logs`,
+      level: environment.logLevel,
+      serverLogLevel: environment.serverLogLevel,
+    }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-
-export class AppModule { }
+export class AppModule {}

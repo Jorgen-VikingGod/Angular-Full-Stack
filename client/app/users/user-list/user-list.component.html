@@ -1,0 +1,38 @@
+<div class="container" fxLayout="row" fxLayoutAlign="center none">
+  <div fxFlex="95%">
+    <mat-card>
+      <mat-card-content>
+        <h2><mat-icon>people_outline</mat-icon> Users ({{ users.length }})</h2>
+        <div class="table-container" fxLayout="column">
+          <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
+            <ng-container matColumnDef="username">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Username</th>
+              <td mat-cell *matCellDef="let user">{{ user.username }} ({{ user.id }})</td>
+            </ng-container>
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
+              <td mat-cell *matCellDef="let user">
+                <mat-select [(value)]="user.role" (selectionChange)="roleChanged(user)">
+                  <mat-option value="user">User</mat-option>
+                  <mat-option value="admin">Admin</mat-option>
+                </mat-select>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="remove">
+              <th mat-header-cell *matHeaderCellDef class="table-acion-column">Delete</th>
+              <td mat-cell *matCellDef="let user; let i = index" class="table-acion-column">
+                <button mat-icon-button (click)="deleteUser(user, i)" matTooltip="Remove this user">
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let rows; columns: columns"></tr>
+          </table>
+
+          <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

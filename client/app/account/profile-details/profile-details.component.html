@@ -1,0 +1,36 @@
+<div class="profile-card" *ngIf="user">
+  <img src="assets/user.png" [alt]="user.username" />
+
+  <h2 class="title">
+    {{ user.username }}
+  </h2>
+
+  <mat-form-field class="full-width">
+    <mat-label>Username</mat-label>
+    <input
+      matInput
+      placeholder="Username"
+      [(ngModel)]="user.username"
+      [formControl]="username"
+      required
+    />
+    <mat-error *ngIf="username.invalid">{{ getErrorMessage() }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Role</mat-label>
+    <mat-select [(value)]="user.role">
+      <mat-option disabled>None</mat-option>
+      <mat-option value="user">User</mat-option>
+      <mat-option value="admin">Admin</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" [disabled]="username.invalid" (click)="save(user)">
+    Save
+  </button>
+</div>
+<div class="profile-card" *ngIf="!user">
+  <h2 class="title">
+    User not found!
+  </h2>
+</div>

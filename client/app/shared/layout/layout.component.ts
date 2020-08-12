@@ -1,0 +1,56 @@
+import { MediaMatcher } from '@angular/cdk/layout';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { TimerObservable } from 'rxjs/observable/TimerObservable';
+
+import { SpinnerService } from '../../core/services/spinner.service';
+import { AuthService } from './../../core/services/auth.service';
+import { AuthGuard } from './../../core/guards/auth.guard';
+
+@Component({
+  selector: 'app-layout',
+  templateUrl: './layout.component.html',
+  styleUrls: ['./layout.component.scss'],
+})
+export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
+  private mobileQueryListener: () => void;
+  mobileQuery: MediaQueryList;
+  showSpinner: boolean;
+  userName: string;
+
+  private autoLogoutSubscription: Subscription;
+
+  constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    private media: MediaMatcher,
+    public spinnerService: SpinnerService,
+    public authService: AuthService,
+    private authGuard: AuthGuard
+  ) {
+    this.mobileQuery = this.media.matchMedia('(max-width: 1000px)');
+    this.mobileQueryListener = () => changeDetectorRef.detectChanges();
+    // tslint:disable-next-line: deprecation
+    this.mobileQuery.addListener(this.mobileQueryListener);
+  }
+
+  ngOnInit(): void {
+    const user = this.authService.getCurrentUser();
+    this.userName = user.username;
+
+    // Auto log-out subscription
+    const timer = TimerObservable.create(2000, 5000);
+    this.autoLogoutSubscription = timer.subscribe((t) => {
+      this.authGuard.canActivate();
+    });
+  }
+
+  ngOnDestroy(): void {
+    // tslint:disable-next-line: deprecation
+    this.mobileQuery.removeListener(this.mobileQueryListener);
+    this.autoLogoutSubscription.unsubscribe();
+  }
+
+  ngAfterViewInit(): void {
+    this.changeDetectorRef.detectChanges();
+  }
+}
