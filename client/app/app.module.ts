@@ -25,8 +25,17 @@ import { environment } from '../environments/environment';
     AppRoutingModule,
     JwtModule.forRoot({
       config: {
+        authScheme: 'Bearer ',
         tokenGetter: (): string => localStorage.getItem('token'),
-        // whitelistedDomains: ['localhost:3000', 'localhost:4200']
+        whitelistedDomains: ['localhost:3000', 'localhost:4200'],
+        blacklistedRoutes: [
+          'http://localhost:3000/api/v1/login',
+          'http://localhost:3000/api/v1/register',
+          'http://localhost:3000/api/v1/refresh',
+          'http://localhost:4200/api/v1/login',
+          'http://localhost:4200/api/v1/register',
+          'http://localhost:4200/api/v1/refresh',
+        ],
       },
     }),
     LoggerModule.forRoot({

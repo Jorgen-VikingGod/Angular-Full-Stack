@@ -50,7 +50,12 @@ export class UserListComponent implements OnInit {
   roleChanged(user: User): void {
     this.userService.editUser(user).subscribe(
       (data) => {
-        this.authService.setCurrentUser(data);
+        console.log(data);
+        if (
+          data.username.toLowerCase() === this.authService.getCurrentUser().username.toLowerCase()
+        ) {
+          this.authService.changeCurrentUser(data);
+        }
       },
       (error) => console.log(error),
       () => (this.isLoading = false)

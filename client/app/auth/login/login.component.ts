@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from '../../core/services/auth.service';
 import { Title } from '@angular/platform-browser';
@@ -13,11 +13,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading: boolean;
 
-  constructor(
-    private authService: AuthService,
-    private titleService: Title,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private titleService: Title) {}
 
   ngOnInit(): void {
     this.titleService.setTitle('angular-material-template - Login');

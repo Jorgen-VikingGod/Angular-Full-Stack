@@ -33,27 +33,22 @@ export class ProfileDetailsComponent implements OnInit {
 
   getUser(): void {
     this.isLoading = true;
-    this.userService.getUser(this.authService.getCurrentUser()).subscribe(
-      (data: User) => {
-        this.user = data;
-        this.username.setValue(this.user.username);
-        console.log(this.user);
-      },
-      (error) => console.log(error),
-      () => (this.isLoading = false)
-    );
+    this.user = this.authService.getCurrentUser();
+    this.username.setValue(this.user.username);
+    this.isLoading = false;
   }
 
   save(user: User): void {
+    this.isLoading = true;
     const username: string = this.username.value;
     this.userService.editUser({ ...user, username }).subscribe(
       (res: User) => {
         this.user = res;
         this.notificationService.openSnackBar('account settings saved!');
-        this.authService.setCurrentUser(res);
-        console.log(res);
+        this.authService.changeCurrentUser(res);
       },
-      (error) => console.log(error)
+      (error) => console.log(error),
+      () => (this.isLoading = false)
     );
   }
 }

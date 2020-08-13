@@ -1,44 +1,75 @@
 import * as jwt from 'jsonwebtoken';
-import { User } from 'models/user';
-
+import * as bcrypt from 'bcryptjs';
+import { User } from './../models/user';
 import BaseCtrl from './base';
 
 class UserCtrl extends BaseCtrl {
   model = [
-    { id: '1', username: 'admin', password: 'admin', role: 'admin' },
-    { id: '2', username: 'tester', password: 'tester', role: 'user' },
+    {
+      id: '1',
+      username: 'admin',
+      password: '$2y$10$ZkIggXw/dzic90j5xexyIeT38JcVJiEJz4Em1NSjHPztVHnftMzoi',
+      role: 'admin',
+    },
+    {
+      id: '2',
+      username: 'tester',
+      password: '$2y$10$gJM8fKJDkVdayCjGYNTFzuKmA2nz2xZ9CamagGI5yTqORIIYgvGMa',
+      role: 'user',
+    },
   ] as User[];
 
-  login = (req, res) => {
-    const { username, password } = req.body;
-    const user = this.model.find(
-      (x) => x.username.toLowerCase() === username.toLowerCase() && x.password === password
-    );
-    if (!user) {
-      return res.status(403).json({ err: 'Username or password is incorrect' });
-    }
-    const token = jwt.sign({ user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
-    return res.status(200).json({
-      ...this.omitPassword(user),
-      token,
-    });
-  };
-
-  // Get by id
-  get = async (req, res) => {
+  register = async (req, res) => {
     try {
-      const obj = this.model.find((x) => x.id === req.params.id);
-      const user = this.omitPassword(obj);
-      res.status(200).json(user);
+      const { username, password, role } = req.body;
+      const user = this.model.find((x) => x.username.toLowerCase() === username.toLowerCase());
+      if (user) {
+        return res.status(403).json({ error: 'User already exists' });
+      } else {
+        const saltedPassword = bcrypt.hashSync(password, 10);
+        const user: User = new User();
+        user.username = username;
+        user.password = saltedPassword;
+        user.role = role;
+        this.model.push(user);
+        const token = jwt.sign({ user }, process.env.SECRET_TOKEN);
+        return res.status(200).json({ token });
+      }
     } catch (err) {
-      return res.status(500).json({ error: err.message });
+      return res.status(400).json({ error: err.message });
     }
   };
 
-  getAll = async (req, res) => {
+  login = async (req, res) => {
     try {
-      const docs = this.model.map((u) => this.omitPassword(u));
-      res.status(200).json(docs);
+      const { username, password } = req.body;
+      const user = this.model.find((x) => x.username.toLowerCase() === username.toLowerCase());
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      } else {
+        if (bcrypt.compareSync(password, user.password)) {
+          const token = jwt.sign({ user }, process.env.SECRET_TOKEN);
+          return res.status(200).json({ token });
+        } else {
+          return res.status(401).json({ error: 'Authentication error' });
+        }
+      }
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+  };
+
+  refresh = async (req, res) => {
+    try {
+      console.log(req.body);
+      const { username } = req.body;
+      const user = this.model.find((x) => x.username.toLowerCase() === username.toLowerCase());
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      } else {
+        const token = jwt.sign({ user }, process.env.SECRET_TOKEN);
+        res.status(200).json({ token });
+      }
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
@@ -49,21 +80,15 @@ class UserCtrl extends BaseCtrl {
     try {
       const index = this.model.findIndex((x) => x.id === req.params.id);
       if (req.body.password) {
-        this.model[index] = req.body;
+        this.model[index] = { ...req.body, password: bcrypt.hashSync(req.body.password, 10) };
       } else {
         const user: User = this.model[index];
         this.model[index] = { ...user, username: req.body.username, role: req.body.role };
       }
-      const userWithoutPassword = this.omitPassword(this.model[index]);
-      res.status(200).json(userWithoutPassword);
+      res.status(200).json(this.model[index]);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
-  };
-
-  omitPassword = (user: User) => {
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
   };
 }
 

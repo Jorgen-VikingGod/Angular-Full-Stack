@@ -3,6 +3,7 @@ import * as express from 'express';
 import CatCtrl from './controllers/cat';
 import UserCtrl from './controllers/user';
 import EventCtrl from './controllers/event';
+import validateToken from './utils';
 
 function setRoutes(app): void {
   const router = express.Router();
@@ -11,32 +12,34 @@ function setRoutes(app): void {
   const eventCtrl = new EventCtrl();
 
   // Cats
-  router.route('/cats').get(catCtrl.getAll);
-  router.route('/cats/count').get(catCtrl.count);
-  router.route('/cat').post(catCtrl.insert);
-  router.route('/cat/:id').get(catCtrl.get);
-  router.route('/cat/:id').put(catCtrl.update);
-  router.route('/cat/:id').delete(catCtrl.delete);
+  router.route('/cats').get(validateToken, catCtrl.getAll);
+  router.route('/cats/count').get(validateToken, catCtrl.count);
+  router.route('/cat').post(validateToken, catCtrl.insert);
+  router.route('/cat/:id').get(validateToken, catCtrl.get);
+  router.route('/cat/:id').put(validateToken, catCtrl.update);
+  router.route('/cat/:id').delete(validateToken, catCtrl.delete);
 
   // Users
+  router.route('/register').post(userCtrl.register);
   router.route('/login').post(userCtrl.login);
-  router.route('/users').get(userCtrl.getAll);
-  router.route('/users/count').get(userCtrl.count);
-  router.route('/user').post(userCtrl.insert);
-  router.route('/user/:id').get(userCtrl.get);
-  router.route('/user/:id').put(userCtrl.update);
-  router.route('/user/:id').delete(userCtrl.delete);
+  router.route('/refresh').post(userCtrl.refresh);
+  router.route('/users').get(validateToken, userCtrl.getAll);
+  router.route('/users/count').get(validateToken, userCtrl.count);
+  router.route('/user').post(validateToken, userCtrl.insert);
+  router.route('/user/:id').get(validateToken, userCtrl.get);
+  router.route('/user/:id').put(validateToken, userCtrl.update);
+  router.route('/user/:id').delete(validateToken, userCtrl.delete);
 
   // Events
-  router.route('/events').get(eventCtrl.getAll);
-  router.route('/events/count').get(eventCtrl.count);
-  router.route('/event').post(eventCtrl.insert);
-  router.route('/event/:id').get(eventCtrl.get);
-  router.route('/event/:id').put(eventCtrl.update);
-  router.route('/event/:id').delete(eventCtrl.delete);
+  router.route('/events').get(validateToken, eventCtrl.getAll);
+  router.route('/events/count').get(validateToken, eventCtrl.count);
+  router.route('/event').post(validateToken, eventCtrl.insert);
+  router.route('/event/:id').get(validateToken, eventCtrl.get);
+  router.route('/event/:id').put(validateToken, eventCtrl.update);
+  router.route('/event/:id').delete(validateToken, eventCtrl.delete);
 
   // Apply the routes to our application with the prefix /api
-  app.use('/api', router);
+  app.use('/api/v1', router);
 }
 
 export default setRoutes;
