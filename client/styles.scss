@@ -147,10 +147,12 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 
 .fc-button-primary {
   background-color: mat-color($primary) !important;
+  color: mat-color($primary, default-contrast) !important;
 }
 
 .fc-today-button {
   background-color: mat-color($accent) !important;
+  color: mat-color($accent, default-contrast) !important;
 }
 
 .fc .fc-button:disabled {
@@ -160,6 +162,7 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 
 .fc-button-active {
   background-color: mat-color($accent) !important;
+  color: mat-color($accent, default-contrast) !important;
 }
 
 // Our dark theme
@@ -170,12 +173,19 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
   $dark-warn: mat-palette($mat-red);
   $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
+  .fc-col-header {
+    background-color: #424242; //mat-color($dark-primary) !important;
+    color: mat-color($dark-primary, default-contrast) !important;
+  }
+
   .fc-button-primary {
     background-color: mat-color($dark-primary) !important;
+    color: mat-color($dark-primary, default-contrast) !important;
   }
 
   .fc-today-button {
     background-color: mat-color($dark-accent) !important;
+    color: mat-color($dark-accent, default-contrast) !important;
   }
 
   .fc .fc-button:disabled {
@@ -185,7 +195,10 @@ Colors: Use the following - https://www.google.com/design/spec/style/color.html#
 
   .fc-button-active {
     background-color: mat-color($dark-accent) !important;
+    color: mat-color($dark-accent, default-contrast) !important;
   }
+
+  --fc-border-color: hsla(0, 0%, 100%, 0.12);
 
   @include angular-material-theme($dark-theme);
 }
