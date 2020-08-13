@@ -34,8 +34,9 @@ export class ProfileDetailsComponent implements OnInit {
   getUser(): void {
     this.isLoading = true;
     this.userService.getUser(this.authService.getCurrentUser()).subscribe(
-      (data) => {
+      (data: User) => {
         this.user = data;
+        this.username.setValue(this.user.username);
         console.log(this.user);
       },
       (error) => console.log(error),
@@ -44,11 +45,13 @@ export class ProfileDetailsComponent implements OnInit {
   }
 
   save(user: User): void {
-    this.userService.editUser(user).subscribe(
-      (res) => {
-        this.user = user;
+    const username: string = this.username.value;
+    this.userService.editUser({ ...user, username }).subscribe(
+      (res: User) => {
+        this.user = res;
         this.notificationService.openSnackBar('account settings saved!');
-        this.authService.setCurrentUser(user);
+        this.authService.setCurrentUser(res);
+        console.log(res);
       },
       (error) => console.log(error)
     );

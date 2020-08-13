@@ -13,6 +13,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import momentTimezonePlugin from '@fullcalendar/moment-timezone';
 import momentPlugin from '@fullcalendar/moment';
 import rrulePlugin from '@fullcalendar/rrule';
+import { CalendarService } from './calendar.service';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -27,5 +28,6 @@ FullCalendarModule.registerPlugins([
 @NgModule({
   declarations: [CalendarOverviewComponent],
   imports: [CommonModule, SharedModule, CalendarRoutingModule, FullCalendarModule],
+  providers: [CalendarService],
 })
 export class CalendarModule {}

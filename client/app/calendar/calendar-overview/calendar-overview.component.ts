@@ -8,6 +8,8 @@ import {
   FullCalendarComponent,
   EventInput,
 } from '@fullcalendar/angular';
+import { CalendarService } from '../calendar.service';
+import { CalendarEvent } from 'server/models/event';
 
 @Component({
   selector: 'app-about-home',
@@ -21,6 +23,7 @@ export class CalendarOverviewComponent implements OnInit {
   selected = ['Option 2', 'Option 3'];
 
   calendarVisible = true;
+  /*
   calendarEvents: EventInput[] = [
     {
       allDay: false,
@@ -50,6 +53,7 @@ export class CalendarOverviewComponent implements OnInit {
       duration: '00:60',
     },
   ];
+  */
 
   calendarOptions: CalendarOptions = {
     headerToolbar: {
@@ -63,11 +67,8 @@ export class CalendarOverviewComponent implements OnInit {
       right: '',
     },
     initialView: 'timeGridWeek',
-    //initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting
-    // to fetch from a feed
     height: 'calc(100vh - 320px)',
     stickyHeaderDates: true,
-    events: this.calendarEvents,
     firstDay: 1,
     weekends: true,
     editable: true,
@@ -82,15 +83,11 @@ export class CalendarOverviewComponent implements OnInit {
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
-    /* you can update a remote database when these fire:
-    eventAdd:
-    eventChange:
-    eventRemove:
-    */
   };
   currentEvents: EventApi[] = [];
+  isLoading = true;
 
-  constructor() {}
+  constructor(private calendarService: CalendarService) {}
 
   handleDateClick(arg): void {
     alert('date click! ' + arg.dateStr);
@@ -132,5 +129,16 @@ export class CalendarOverviewComponent implements OnInit {
     this.currentEvents = events;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.calendarService.getEvents().subscribe(
+        (events: CalendarEvent[]) => {
+          this.calendarOptions.events = events;
+          console.log(events);
+        },
+        (error) => console.log(error),
+        () => (this.isLoading = false)
+      );
+    });
+  }
 }

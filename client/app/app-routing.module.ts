@@ -7,6 +7,10 @@ import { AdminGuard } from './core/guards/admin.guard';
 
 const routes: Routes = [
   {
+    path: 'about',
+    loadChildren: () => import('./about/about.module').then((m) => m.AboutModule),
+  },
+  {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
     canActivate: [AuthGuard],
@@ -30,7 +34,7 @@ const routes: Routes = [
     loadChildren: () => import('./users/users.module').then((m) => m.UsersModule),
     canActivate: [AdminGuard],
   },
-  { path: '**', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '**', redirectTo: 'about', pathMatch: 'full' },
 ];
 
 @NgModule({

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { JwtHelperService } from '@auth0/angular-jwt';
-
 import { User } from '../../shared/models/user.model';
 import { NotificationService } from './notification.service';
 import { Observable } from 'rxjs';
@@ -46,12 +45,14 @@ export class AuthService {
     return false;
   }
 
-  logout(): void {
+  logout(navigate: boolean = true): void {
     localStorage.removeItem('token');
     this.loggedIn = false;
     this.isAdmin = false;
     this.currentUser = new User();
-    this.router.navigate(['/']);
+    if (navigate) {
+      this.router.navigate(['/']);
+    }
   }
 
   decodeUserFromToken(token): object {

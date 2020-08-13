@@ -13,7 +13,7 @@
 
     <span class="navbar-spacer"></span>
 
-    <button mat-icon-button [matMenuTriggerFor]="notificationMenu">
+    <button mat-icon-button [matMenuTriggerFor]="notificationMenu" *ngIf="authService.loggedIn">
       <mat-icon matBadge="2" matBadgeColor="accent">notifications</mat-icon>
     </button>
     <mat-menu
@@ -30,7 +30,11 @@
       </a>
     </mat-menu>
 
-    <button mat-button [matMenuTriggerFor]="userMenu">
+    <button mat-icon-button [routerLink]="['/auth/login']" *ngIf="!authService.loggedIn">
+      <mat-icon>login</mat-icon>
+    </button>
+
+    <button mat-button [matMenuTriggerFor]="userMenu" *ngIf="authService.loggedIn">
       <mat-icon>person</mat-icon>
       <span fxShow fxHide.xs>
         {{ userName }}
@@ -61,18 +65,38 @@
     >
       <mat-nav-list>
         <h3 mat-subheader>Home</h3>
-        <a mat-list-item [routerLink]="['/calendar']" routerLinkActive="active">
+
+        <a mat-list-item [routerLink]="['/about']" routerLinkActive="active">
+          <mat-icon mat-list-icon>
+            info_outline
+          </mat-icon>
+          <p mat-line>About</p>
+        </a>
+
+        <a
+          mat-list-item
+          [routerLink]="['/calendar']"
+          routerLinkActive="active"
+          *ngIf="authService.loggedIn"
+        >
           <mat-icon mat-list-icon>
             calendar_today
           </mat-icon>
           <p mat-line>Calendar</p>
         </a>
-        <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
+
+        <a
+          mat-list-item
+          [routerLink]="['/dashboard']"
+          routerLinkActive="active"
+          *ngIf="authService.loggedIn"
+        >
           <mat-icon mat-list-icon>
             dashboard
           </mat-icon>
           <p mat-line>Dashboard</p>
         </a>
+
         <a
           mat-list-item
           [routerLink]="['/users']"
@@ -90,9 +114,14 @@
           <p mat-line>Account</p>
         </a>
 
-        <a mat-list-item [routerLink]="['/auth/login']">
+        <a mat-list-item [routerLink]="['/auth/login']" *ngIf="authService.loggedIn">
           <mat-icon mat-list-icon>exit_to_app</mat-icon>
           <p mat-line>Log out</p>
+        </a>
+
+        <a mat-list-item [routerLink]="['/auth/login']" *ngIf="!authService.loggedIn">
+          <mat-icon mat-list-icon>login</mat-icon>
+          <p mat-line>Login</p>
         </a>
       </mat-nav-list>
     </mat-sidenav>

@@ -36,7 +36,7 @@ export class UserListComponent implements OnInit {
 
   getUsers(): void {
     this.userService.getUsers().subscribe(
-      (data) => {
+      (data: User[]) => {
         this.users = data;
         this.dataSource = new MatTableDataSource(this.users);
         this.dataSource.paginator = this.paginator;
