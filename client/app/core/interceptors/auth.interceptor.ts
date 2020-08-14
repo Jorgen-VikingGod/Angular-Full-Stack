@@ -8,30 +8,18 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { AuthService } from '../services/auth.service';
-
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  constructor(private router: Router, private dialog: MatDialog) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const user = this.authService.getCurrentUser();
     const token = localStorage.getItem('token');
-    console.log(req);
-
-    if (user && token) {
+    if (token) {
       const cloned = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
         },
       });
-      //const cloned = req.clone({
-      //  headers: req.headers.set('Authorization', 'Bearer ' + token),
-      //});
       return next.handle(cloned).pipe(
         tap(
           () => {},

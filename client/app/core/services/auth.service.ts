@@ -32,7 +32,6 @@ export class AuthService {
     const token = localStorage.getItem('token');
     if (token) {
       const decodedUser = this.decodeUserFromToken(token);
-      console.log(decodedUser);
       this.setCurrentUser(decodedUser);
     }
   }
@@ -42,7 +41,6 @@ export class AuthService {
       (res) => {
         localStorage.setItem('token', res.token);
         const decodedUser = this.decodeUserFromToken(res.token);
-        console.log(res, decodedUser);
         this.setCurrentUser(decodedUser);
         this.router.navigate(['/']);
         return true;
@@ -60,7 +58,6 @@ export class AuthService {
       (res) => {
         localStorage.setItem('token', res.token);
         const decodedUser = this.decodeUserFromToken(res.token);
-        console.log(res, decodedUser);
         this.setCurrentUser(decodedUser);
         this.router.navigate(['/']);
         return true;
@@ -92,7 +89,6 @@ export class AuthService {
       (res) => {
         localStorage.setItem('token', res.token);
         const decodedUser = this.decodeUserFromToken(res.token);
-        console.log(res, decodedUser);
         this.setCurrentUser(decodedUser);
         //this.router.navigate(['/']);
         return true;

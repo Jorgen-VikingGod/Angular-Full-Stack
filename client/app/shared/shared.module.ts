@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CustomMaterialModule } from '../custom-material/custom-material.module';
 
@@ -15,14 +14,7 @@ import { YesNoPipe } from './pipes/yes-no.pipe';
 import { UserService } from './services/user.service';
 
 @NgModule({
-  imports: [
-    RouterModule,
-    CustomMaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    FlexLayoutModule,
-    HttpClientModule,
-  ],
+  imports: [RouterModule, CustomMaterialModule, FormsModule, ReactiveFormsModule, FlexLayoutModule],
   exports: [
     FormsModule,
     ReactiveFormsModule,
@@ -33,7 +25,6 @@ import { UserService } from './services/user.service';
     ContentPlaceholderAnimationComponent,
     LocalDatePipe,
     YesNoPipe,
-    HttpClientModule,
   ],
   declarations: [
     ConfirmDialogComponent,

@@ -61,7 +61,6 @@ class UserCtrl extends BaseCtrl {
 
   refresh = async (req, res) => {
     try {
-      console.log(req.body);
       const { username } = req.body;
       const user = this.model.find((x) => x.username.toLowerCase() === username.toLowerCase());
       if (!user) {

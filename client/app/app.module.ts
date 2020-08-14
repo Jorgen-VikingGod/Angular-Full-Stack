@@ -28,18 +28,18 @@ import { environment } from '../environments/environment';
         authScheme: 'Bearer ',
         tokenGetter: (): string => localStorage.getItem('token'),
         whitelistedDomains: ['localhost:3000', 'localhost:4200'],
-        blacklistedRoutes: [
+        /*blacklistedRoutes: [
           'http://localhost:3000/api/v1/login',
           'http://localhost:3000/api/v1/register',
           'http://localhost:3000/api/v1/refresh',
           'http://localhost:4200/api/v1/login',
           'http://localhost:4200/api/v1/register',
           'http://localhost:4200/api/v1/refresh',
-        ],
+        ],*/
       },
     }),
     LoggerModule.forRoot({
-      serverLoggingUrl: `http://my-api/logs`,
+      serverLoggingUrl: '/api/v1/logs',
       level: environment.logLevel,
       serverLogLevel: environment.serverLogLevel,
     }),

@@ -15,8 +15,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
   constructor(private router: Router, private dialog: MatDialog) {}
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log(request);
     return next.handle(request).do(
       (event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
