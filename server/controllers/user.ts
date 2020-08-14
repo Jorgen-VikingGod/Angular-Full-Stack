@@ -61,8 +61,7 @@ class UserCtrl extends BaseCtrl {
 
   refresh = async (req, res) => {
     try {
-      const { username } = req.body;
-      const user = this.model.find((x) => x.username.toLowerCase() === username.toLowerCase());
+      const user = this.model.find((x) => x.id === req.user.id);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       } else {
@@ -74,16 +73,35 @@ class UserCtrl extends BaseCtrl {
     }
   };
 
+  changePassword = async (req, res) => {
+    try {
+      const { username } = req.user;
+      const { oldPassword, newPassword } = req.body;
+      const user = this.model.find((x) => x.username.toLowerCase() === username.toLowerCase());
+      bcrypt.compare(oldPassword, user.password, (err, valid) => {
+        if (err) {
+          return res.status(400).json({ error: err });
+        } else {
+          if (!valid) {
+            return res.status(404).json({ error: 'User not found' });
+          } else {
+            const index = this.model.indexOf(user);
+            this.model[index] = { ...user, password: bcrypt.hashSync(newPassword, 10) };
+            res.status(200).json(this.model[index]);
+          }
+        }
+      });
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+  };
+
   // Update by id
   update = async (req, res) => {
     try {
       const index = this.model.findIndex((x) => x.id === req.params.id);
-      if (req.body.password) {
-        this.model[index] = { ...req.body, password: bcrypt.hashSync(req.body.password, 10) };
-      } else {
-        const user: User = this.model[index];
-        this.model[index] = { ...user, username: req.body.username, role: req.body.role };
-      }
+      const user: User = this.model[index];
+      this.model[index] = { ...user, username: req.body.username, role: req.body.role };
       res.status(200).json(this.model[index]);
     } catch (err) {
       return res.status(400).json({ error: err.message });

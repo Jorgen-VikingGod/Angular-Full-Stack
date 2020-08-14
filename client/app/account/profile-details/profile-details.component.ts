@@ -45,7 +45,7 @@ export class ProfileDetailsComponent implements OnInit {
       (res: User) => {
         this.user = res;
         this.notificationService.openSnackBar('account settings saved!');
-        this.authService.changeCurrentUser(res);
+        this.authService.refreshCurrentUser();
       },
       (error) => console.log(error),
       () => (this.isLoading = false)

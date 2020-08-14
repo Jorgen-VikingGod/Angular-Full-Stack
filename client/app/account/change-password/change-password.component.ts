@@ -62,7 +62,7 @@ export class ChangePasswordComponent implements OnInit {
 
     const user = this.authService.getCurrentUser();
 
-    this.authService.changePassword(user, this.newPassword).subscribe(
+    this.authService.changePassword(this.currentPassword, this.newPassword).subscribe(
       (data) => {
         this.logger.info(`User ${user.username} changed password.`);
         this.form.reset();

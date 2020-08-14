@@ -37,7 +37,7 @@
     <button mat-button [matMenuTriggerFor]="userMenu" *ngIf="authService.isLoggedIn()">
       <mat-icon>person</mat-icon>
       <span fxShow fxHide.xs>
-        {{ userName }}
+        {{ authService.username() }}
       </span>
     </button>
     <mat-menu #userMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">

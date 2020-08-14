@@ -8,9 +8,9 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { UserService } from './../../shared/services/user.service';
 
 export class AuthInfo {
-  constructor(public token: string, public role: string) {}
+  constructor(public id: string = '', public role: string = '', public username: string = '') {}
   isLoggedIn(): boolean {
-    return !!this.token;
+    return !!this.id;
   }
   isAdmin(): boolean {
     return this.role === 'admin';
@@ -83,14 +83,12 @@ export class AuthService {
     return this.jwtHelper.decodeToken(token).user;
   }
 
-  changeCurrentUser(user: User): void {
-    console.log(user);
-    this.userService.refresh(user).subscribe(
+  refreshCurrentUser(): void {
+    this.userService.refresh().subscribe(
       (res) => {
         localStorage.setItem('token', res.token);
         const decodedUser = this.decodeUserFromToken(res.token);
         this.setCurrentUser(decodedUser);
-        //this.router.navigate(['/']);
         return true;
       },
       (error) => {
@@ -104,7 +102,11 @@ export class AuthService {
     this.currentUser.id = decodedUser.id;
     this.currentUser.username = decodedUser.username;
     this.currentUser.role = decodedUser.role;
-    const authInfo = new AuthInfo(this.currentUser.id, this.currentUser.role);
+    const authInfo = new AuthInfo(
+      this.currentUser.id,
+      this.currentUser.role,
+      this.currentUser.username
+    );
     this.authInfo$.next(authInfo);
     delete decodedUser.role;
   }
@@ -113,8 +115,8 @@ export class AuthService {
     return this.currentUser;
   }
 
-  changePassword(user: User, newPwd: string): Observable<User> {
-    return this.userService.editUser({ ...user, password: newPwd });
+  changePassword(oldPwd: string, newPwd: string): Observable<User> {
+    return this.userService.changePassword(oldPwd, newPwd);
   }
 
   getAuthInfo(): Observable<AuthInfo> {
@@ -127,5 +129,9 @@ export class AuthService {
 
   isAdmin(): boolean {
     return this.authInfo$.getValue().isAdmin();
+  }
+
+  username(): string {
+    return this.authInfo$.getValue().username;
   }
 }

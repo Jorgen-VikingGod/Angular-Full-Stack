@@ -17,7 +17,7 @@ import { Sort } from '@angular/material/sort';
 export class UserListComponent implements OnInit {
   users: User[] = [];
   isLoading = true;
-  columns = ['username', 'role', 'remove'];
+  columns = ['id', 'username', 'role', 'remove'];
   dataSource: MatTableDataSource<User>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -50,11 +50,8 @@ export class UserListComponent implements OnInit {
   roleChanged(user: User): void {
     this.userService.editUser(user).subscribe(
       (data) => {
-        console.log(data);
-        if (
-          data.username.toLowerCase() === this.authService.getCurrentUser().username.toLowerCase()
-        ) {
-          this.authService.changeCurrentUser(data);
+        if (data.id === this.authService.getCurrentUser().id) {
+          this.authService.refreshCurrentUser();
         }
       },
       (error) => console.log(error),
@@ -82,6 +79,8 @@ export class UserListComponent implements OnInit {
       this.dataSource.data = this.dataSource.data.sort((a, b) => {
         const isAsc = sort.direction === 'asc';
         switch (sort.active) {
+          case 'id':
+            return this.compare(a.id, b.id, isAsc);
           case 'username':
             return this.compare(a.username, b.username, isAsc);
           case 'role':

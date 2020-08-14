@@ -15,8 +15,8 @@ export class UserService {
     return this.http.post<User>('/api/v1/login', credentials);
   }
 
-  refresh(user): Observable<User> {
-    return this.http.post<User>('/api/v1/refresh', user);
+  refresh(): Observable<User> {
+    return this.http.post<User>('/api/v1/refresh', {});
   }
 
   getUsers(): Observable<User[]> {
@@ -37,6 +37,13 @@ export class UserService {
 
   editUser(user: User): Observable<User> {
     return this.http.put<User>(`/api/v1/user/${user.id}`, user);
+  }
+
+  changePassword(oldPwd: string, newPwd: string): Observable<User> {
+    return this.http.put<User>(`/api/v1/change-password`, {
+      oldPassword: oldPwd,
+      newPassword: newPwd,
+    });
   }
 
   deleteUser(user: User): Observable<any> {

@@ -22,7 +22,8 @@ function setRoutes(app): void {
   // Users
   router.route('/register').post(userCtrl.register);
   router.route('/login').post(userCtrl.login);
-  router.route('/refresh').post(userCtrl.refresh);
+  router.route('/refresh').post(authorize(), userCtrl.refresh);
+  router.route('/change-password').put(authorize(), userCtrl.changePassword);
   router.route('/users').get(authorize('admin'), userCtrl.getAll);
   router.route('/users/count').get(authorize('admin'), userCtrl.count);
   router.route('/user').post(authorize('admin'), userCtrl.insert);
